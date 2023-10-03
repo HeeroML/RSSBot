@@ -7,7 +7,6 @@ let response = await fetch(
 let xml = await response.text();
 let feed = await parseFeed(xml);
 
-
 // Define the session structure.
 interface SessionData {
     date: number;

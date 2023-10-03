@@ -51,9 +51,9 @@ async function checkForNewItems() {
     // Get the latest item
     const currentItem = feed.entries[0];
         console.log(currentItem.links[0].href);
-        console.log(latestItem);
+        console.log(latestItem.link);
     // Compare with the previous item
-    if (currentItem.links[0].href !== latestItem) {
+    if (currentItem.links[0].href !== latestItem.link) {
         // Run your function here
         console.log('New item detected:', currentItem.title.value);
         await bot.api.sendMessage(58310247 ,"***" + currentItem.title.value + "***" + "\n\n" + currentItem.links[0].href, {parse_mode: "Markdown"});

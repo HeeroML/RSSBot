@@ -19,7 +19,13 @@ type MyContext = Context & SessionFlavor<SessionData>;
 // Create the bot and register the session middleware.
 
 export const bot = new Bot<MyContext>(Deno.env.get("BOT_TOKEN") || "6415549412:AAF-Ya94TVe2Ho_fGTECnUCpHL-A4lGQnLc");
+const kv = await Deno.openKv();
 
+const newslink = {
+  link: "null",
+};
+
+const result = await kv.set(["links"], newslink);
 bot.use(session({
     initial: () => ({ date: 0, latestItem: null }),
     storage: freeStorage<SessionData>(bot.token),
@@ -31,7 +37,7 @@ bot.command("start", async (ctx) => {
 
 
 // Define a variable to store the latest item
-let latestItem: any | null = null;
+const latestItem = await kv.get(["links"]);
 
 // Define a function to check for new items
 async function checkForNewItems() {
@@ -45,15 +51,14 @@ async function checkForNewItems() {
     // Get the latest item
     const currentItem = feed.entries[0];
         console.log(currentItem.links[0].href);
-        console.log(latestItem?.links[0].href);
+        console.log(latestItem);
     // Compare with the previous item
-    if (currentItem.links[0].href !== latestItem?.links[0].href) {
+    if (currentItem.links[0].href !== latestItem) {
         // Run your function here
         console.log('New item detected:', currentItem.title.value);
         await bot.api.sendMessage(58310247 ,"***" + currentItem.title.value + "***" + "\n\n" + currentItem.links[0].href, {parse_mode: "Markdown"});
-
         // Update the latest item
-        latestItem = currentItem;
+        await kv.set(["links"], currentItem);
     }
 }
 

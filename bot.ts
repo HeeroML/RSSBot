@@ -65,6 +65,6 @@ async function checkForNewItems() {
 bot.command("ping", (ctx) => ctx.reply(`Pong! ${new Date()} ${Date.now()}`));
 
 // Call the function periodically
-setInterval(() => checkForNewItems(), 6000); // Check every minute
+setInterval(() => checkForNewItems(), 60000); // Check every minute
 
 bot.command("ping", (ctx) => ctx.reply(`Pong! ${new Date()} ${Date.now()}`));

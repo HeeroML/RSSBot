@@ -56,7 +56,7 @@ async function checkForNewItems() {
     if (currentItem.links[0].href !== latestItem.links.links[0].href) {
         // Run your function here
         console.log('New item detected:', currentItem.title.value);
-        await bot.api.sendMessage(58310247 ,"***" + currentItem.title.value + "***" + "\n\n" + currentItem.links[0].href, {parse_mode: "Markdown"});
+       // await bot.api.sendMessage(58310247 ,"***" + currentItem.title.value + "***" + "\n\n" + currentItem.links[0].href, {parse_mode: "Markdown"});
         // Update the latest item
         await kv.set(["links"], currentItem);
     }

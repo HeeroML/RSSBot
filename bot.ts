@@ -25,7 +25,6 @@ const newslink = {
   link: "null",
 };
 
-const result = await kv.set(["links"], newslink);
 bot.use(session({
     initial: () => ({ date: 0, latestItem: null }),
     storage: freeStorage<SessionData>(bot.token),

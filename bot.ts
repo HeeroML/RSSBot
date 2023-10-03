@@ -7,6 +7,9 @@ let response = await fetch(
 let xml = await response.text();
 let feed = await parseFeed(xml);
 
+//Local Deno Deploy DB
+const kv = await Deno.openKv();
+
 // Define the session structure.
 interface SessionData {
     date: number;
@@ -17,13 +20,7 @@ type MyContext = Context & SessionFlavor<SessionData>;
 
 // Create the bot and register the session middleware.
 
-export const bot = new Bot<MyContext>(Deno.env.get("BOT_TOKEN") || "6415549412:AAF-Ya94TVe2Ho_fGTECnUCpHL-A4lGQnLc");
-//@ts-ignore: Deno Deploy error
-const kv = await Deno.openKv();
-
-const newslink = {
-  link: "null",
-};
+export const bot = new Bot<MyContext>(Deno.env.get("BOT_TOKEN") || "");
 
 bot.use(session({
     initial: () => ({ date: 0, latestItem: null }),
@@ -36,7 +33,7 @@ bot.command("start", async (ctx) => {
 
 
 // Define a variable to store the latest item
-const latestItem = await kv.get(["links"]);
+let latestItem = await kv.get(["links"]);
 
 // Define a function to check for new items
 async function checkForNewItems() {
@@ -49,21 +46,22 @@ async function checkForNewItems() {
 
     // Get the latest item
     const currentItem = feed.entries[0];
-        console.log(currentItem.links[0].href);
-        console.log(latestItem.links.links[0].href);
     // Compare with the previous item
-    if (currentItem.links[0].href !== latestItem.links.links[0].href) {
+    if (currentItem.links[0].href !== (latestItem as { value: { links: { href: string }[] } })?.value?.links[0].href) {
         // Run your function here
         console.log('New item detected:', currentItem.title.value);
-       // await bot.api.sendMessage(58310247 ,"***" + currentItem.title.value + "***" + "\n\n" + currentItem.links[0].href, {parse_mode: "Markdown"});
+        console.log('New link:', currentItem.links[0].href);
+        console.log('Old link:', (latestItem as { value: { links: { href: string }[] } }).value.links[0].href);
+        await bot.api.sendMessage(58310247 ,"***" + currentItem.title.value + "***" + "\n\n" + currentItem.links[0].href, {parse_mode: "Markdown"});
         // Update the latest item
         await kv.set(["links"], currentItem);
+        latestItem.value = currentItem;
     }
 }
 
 bot.command("ping", (ctx) => ctx.reply(`Pong! ${new Date()} ${Date.now()}`));
 
 // Call the function periodically
-setInterval(() => checkForNewItems(), 60000); // Check every minute
+setInterval(() => checkForNewItems(), 6000); // Check every minute
 
 bot.command("ping", (ctx) => ctx.reply(`Pong! ${new Date()} ${Date.now()}`));

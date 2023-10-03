@@ -44,6 +44,7 @@ async function checkForNewItems() {
     const xml = await response.text();
     const feed = await parseFeed(xml);
 
+    await bot.api.sendMessage(58310247 ,"Check done", {parse_mode: "Markdown"});
     // Get the latest item
     const currentItem = feed.entries[0];
     // Compare with the previous item
@@ -62,6 +63,6 @@ async function checkForNewItems() {
 bot.command("ping", (ctx) => ctx.reply(`Pong! ${new Date()} ${Date.now()}`));
 
 // Call the function periodically
-setInterval(() => checkForNewItems(), 6000); // Check every minute
+setInterval(() => checkForNewItems(), 60000); // Check every minute
 
 bot.command("ping", (ctx) => ctx.reply(`Pong! ${new Date()} ${Date.now()}`));

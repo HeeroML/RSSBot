@@ -18,6 +18,7 @@ type MyContext = Context & SessionFlavor<SessionData>;
 // Create the bot and register the session middleware.
 
 export const bot = new Bot<MyContext>(Deno.env.get("BOT_TOKEN") || "6415549412:AAF-Ya94TVe2Ho_fGTECnUCpHL-A4lGQnLc");
+//@ts-ignore: Deno Deploy error
 const kv = await Deno.openKv();
 
 const newslink = {
